@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'lihat_data.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
 
@@ -87,8 +88,7 @@ class _QrCodeScanState extends State<QrCodeScan> {
       });
 
       try {
-        
-        final response = await http.post(
+        final _ = await http.post(
           Uri.parse(scriptURL),
           headers: {'Content-Type': 'application/json'},
           body: json.encode({
@@ -102,8 +102,6 @@ class _QrCodeScanState extends State<QrCodeScan> {
         setState(() {
           isLoading = false;
           sudahKirim = true;
-
-          // Reset data setelah berhasil kirim
           result = "Waiting QR Scan Text";
           nim = null;
           nama = null;
@@ -241,60 +239,77 @@ Scanned at : $timestamp
                   ),
                 ],
               )
-            : Column(
-                mainAxisAlignment: nim == null ? MainAxisAlignment.center : MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  const SizedBox(height: 40),
-                  ClipOval(
-                    child: Image.asset(
-                      'assets/logo.jpg',
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Container(
-                      width: double.infinity,
-                      child: Text(
-                        result,
-                        style: const TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF6A7BA2),
-                          height: 1.5,
-                          fontFamily: 'Courier',
-                        ),
-                        textAlign: nim == null ? TextAlign.center : TextAlign.left,
+            : SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: nim == null ? MainAxisAlignment.center : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(height: 40),
+                    ClipOval(
+                      child: Image.asset(
+                        'assets/logo.jpg',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  ElevatedButton(
-                    onPressed: startScanner,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: pastelButton,
-                      foregroundColor: pastelBlue,
-                    ),
-                    child: const Text('Scan QR CODE', style: TextStyle(fontSize: 20)),
-                  ),
-                  const SizedBox(height: 20),
-                  isLoading
-                      ? const CircularProgressIndicator()
-                      : ElevatedButton(
-                          onPressed: (!isQrValid || sudahKirim || nim == null || !isOnline)
-                              ? null
-                              : kirimDataKeSheet,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: pastelButton,
-                            foregroundColor: pastelBlue,
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          result,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6A7BA2),
+                            height: 1.5,
+                            fontFamily: 'Courier',
                           ),
-                          child: const Text('Hadir Lah', style: TextStyle(fontSize: 18)),
+                          textAlign: nim == null ? TextAlign.center : TextAlign.left,
                         ),
-                ],
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    ElevatedButton(
+                      onPressed: startScanner,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: pastelButton,
+                        foregroundColor: pastelBlue,
+                      ),
+                      child: const Text('Scan QR CODE', style: TextStyle(fontSize: 20)),
+                    ),
+                    const SizedBox(height: 20),
+                    isLoading
+                        ? const CircularProgressIndicator()
+                        : ElevatedButton(
+                            onPressed: (!isQrValid || sudahKirim || nim == null || !isOnline)
+                                ? null
+                                : kirimDataKeSheet,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: pastelButton,
+                              foregroundColor: pastelBlue,
+                            ),
+                            child: const Text('Hadir', style: TextStyle(fontSize: 18)),
+                          ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LihatDataPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: pastelButton,
+                        foregroundColor: pastelBlue,
+                      ),
+                      child: const Text("Lihat Data Absensi", style: TextStyle(fontSize: 18)),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
       ),
     );
