@@ -292,7 +292,7 @@ Scanned at : $timestamp
                             backgroundColor: pastelButton,
                             foregroundColor: pastelBlue,
                           ),
-                          child: const Text('Hadir', style: TextStyle(fontSize: 18)),
+                          child: const Text('Hadir Lah', style: TextStyle(fontSize: 18)),
                         ),
                 ],
               ),
