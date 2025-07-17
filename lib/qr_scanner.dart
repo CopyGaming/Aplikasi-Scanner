@@ -15,7 +15,7 @@ class QrCodeScan extends StatefulWidget {
 }
 
 class _QrCodeScanState extends State<QrCodeScan> {
-  String result = "Waiting QR Scan Text";
+  String result = "Menunggu QR Di Pindai";
   bool isScanning = false;
   bool isLoading = false;
   bool sudahKirim = false;
