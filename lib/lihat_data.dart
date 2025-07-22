@@ -18,9 +18,9 @@ class _LihatDataPageState extends State<LihatDataPage> {
   final String spreadsheetUrl =
       'https://opensheet.elk.sh/1_z8Aw5EW3NAOw-JXaq1eHURTEqUVj_1HGSByP5Keo5Q/Absen%20Scan';
 
-  final Color pastelPink = const Color(0xFFFFE4EC);
-  final Color pastelBlue = const Color(0xFF6A7BA2);
-  final Color pastelButton = const Color.fromARGB(255, 225, 131, 182);
+  final Color pastelPink = const Color(0xFFe8f5e9);
+  final Color pastelBlue = const Color(0xFF2e7d32); 
+  final Color pastelButton = const Color(0xFFa1887f);
 
   Future<void> fetchData() async {
     try {
@@ -86,7 +86,13 @@ class _LihatDataPageState extends State<LihatDataPage> {
     return Scaffold(
       backgroundColor: pastelPink,
       appBar: AppBar(
-        title: const Text("Data Absensi"),
+        title: const Text("Data Absensi",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+            color: Color.fromARGB(255, 228, 255, 229),
+          ),
+        ),
         backgroundColor: pastelBlue,
         elevation: 4,
         leading: IconButton(
@@ -151,7 +157,7 @@ class _LihatDataPageState extends State<LihatDataPage> {
                                               cell.toString(),
                                               style: const TextStyle(
                                                 fontSize: 14,
-                                                color: Colors.black87,
+                                                color: Color.fromARGB(221, 0, 0, 0),
                                               ),
                                             ),
                                           ),

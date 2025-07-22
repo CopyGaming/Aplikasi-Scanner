@@ -27,9 +27,9 @@ class _QrCodeScanState extends State<QrCodeScan> {
   final String scriptURL =
       'https://script.google.com/macros/s/AKfycbyO176Yl4zx0hgo-q8zi8s3JxQcBEQmKPdQ9etsqMixNW4R4CQ_KaqglsXEbs3p_fLKGA/exec';
 
-  final Color pastelPink = const Color(0xFFFFE4EC);
-  final Color pastelBlue = const Color(0xFF6A7BA2);
-  final Color pastelButton = const Color.fromARGB(255, 225, 131, 182);
+  final Color pastelPink = const Color.fromARGB(255, 228, 255, 229);
+  final Color pastelBlue = const Color.fromARGB(255, 255, 255, 255);
+  final Color pastelButton = const Color.fromARGB(255, 126, 217, 122);
 
   Timer? _timer;
 
@@ -151,12 +151,12 @@ class _QrCodeScanState extends State<QrCodeScan> {
             const SizedBox(width: 10),
             const Text(
               "Absensi NSOP",
-              style: TextStyle(color: Color(0xFF6A7BA2)),
+              style: TextStyle(color: Color.fromRGBO(225, 255, 226, 1)),
             ),
           ],
         ),
         centerTitle: false,
-        iconTheme: const IconThemeData(color: Color(0xFF6A7BA2)),
+        iconTheme: const IconThemeData(color: Color.fromARGB(255, 129, 228, 147)),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -173,8 +173,35 @@ class _QrCodeScanState extends State<QrCodeScan> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
+      body: Stack(
+      children: [
+        // Background warna hijau gradasi (atau bisa pakai gambar juga)
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF2e7d32), // hijau daun
+                Color(0xFFa5d6a7), // hijau pucat
+              ],
+            ),
+          ),
+        ),
+    
+
+        // Efek blur
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Container(
+            color: Colors.black.withOpacity(0.1), // transparan supaya blur terlihat
+          ),
+        ),
+
+    // Konten utama
+    SafeArea(
+      child: Column(
+
           children: [
             // Tombol "Lihat Absensi"
             Padding(
@@ -200,6 +227,7 @@ class _QrCodeScanState extends State<QrCodeScan> {
                 ),
               ),
             ),
+            
             const SizedBox(height: 10),
 
             // Area utama
@@ -328,6 +356,9 @@ Scanned at : $timestamp
           ],
         ),
       ),
+      ],
+      )
+      
     );
   }
 }
