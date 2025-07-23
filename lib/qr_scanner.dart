@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'lihat_data.dart';
@@ -108,13 +109,77 @@ class _QrCodeScanState extends State<QrCodeScan> {
 
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("✅ Berhasil Tercatat"),
-            content: const Text("Data kehadiran kamu sudah tercatat di Google Sheet."),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text("OK"),
+          barrierColor: Colors.black.withOpacity(0.2), // semi transparan di luar dialog
+          builder: (context) => Stack(
+            children: [
+              // Blur seluruh layar di belakang dialog
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Container(color: Colors.transparent),
+              ),
+              // Dialog utama
+              Center(
+                child: Dialog(
+                  backgroundColor: Colors.transparent,
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.check_circle, color: Colors.white, size: 48),
+                          const SizedBox(height: 12),
+                          const Text(
+                            "✅ Berhasil Tercatat",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Data kehadiran kamu sudah tercatat di Google Sheet.",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.green[700],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("OK", style: TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -151,7 +216,7 @@ class _QrCodeScanState extends State<QrCodeScan> {
             const SizedBox(width: 10),
             const Text(
               "Absensi NSOP",
-              style: TextStyle(color: Color.fromRGBO(225, 255, 226, 1)),
+              style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
             ),
           ],
         ),
@@ -174,191 +239,176 @@ class _QrCodeScanState extends State<QrCodeScan> {
         ],
       ),
       body: Stack(
-      children: [
-        // Background warna hijau gradasi (atau bisa pakai gambar juga)
-        Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFF2e7d32), // hijau daun
-                Color(0xFFa5d6a7), // hijau pucat
-              ],
+        children: [
+          // Background gambar hutan
+          SizedBox.expand(
+            child: Image.asset(
+              'assets/hutan.jpg', // pastikan file ini ada di folder assets
+              fit: BoxFit.cover,
             ),
           ),
-        ),
-    
-
-        // Efek blur
-        BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: Container(
-            color: Colors.black.withOpacity(0.1), // transparan supaya blur terlihat
+          // Efek blur di atas gambar
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
+            child: Container(
+              color: Colors.black.withOpacity(0.2), // semi transparan agar blur lebih terasa
+            ),
           ),
-        ),
-
-    // Konten utama
-    SafeArea(
-      child: Column(
-
-          children: [
-            // Tombol "Lihat Absensi"
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LihatDataPage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: pastelButton,
-                    foregroundColor: pastelBlue,
-                    textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          // Konten utama
+          SafeArea(
+            child: Column(
+              children: [
+                // Tombol "Lihat Absensi"
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LihatDataPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: pastelButton,
+                        foregroundColor: pastelBlue,
+                        textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text("Lihat Absensi"),
+                    ),
                   ),
-                  child: const Text("Lihat Absensi"),
                 ),
-              ),
-            ),
-            
-            const SizedBox(height: 10),
-
-            // Area utama
-            Expanded(
-              child: Center(
-                child: isScanning
-                    ? Stack(
-                        children: [
-                          // Kamera untuk scan QR
-                          MobileScanner(
-                            onDetect: (barcodeCapture) {
-                              final List<Barcode> barcodes = barcodeCapture.barcodes;
-                              if (barcodes.isNotEmpty) {
-                                final String? code = barcodes.first.rawValue;
-                                if (code != null) {
-                                  List<String> parts = code.split(',');
-                                  if (parts.length == 3) {
-                                    setState(() {
-                                      nim = parts[0].trim();
-                                      nama = parts[1].trim();
-                                      kelompok = parts[2].trim();
-                                      timestamp = getCurrentTimestamp();
-                                      result = '''
+                const SizedBox(height: 10),
+                // Area utama
+                Expanded(
+                  child: Center(
+                    child: isScanning
+                        ? Stack(
+                            children: [
+                              // Kamera untuk scan QR
+                              MobileScanner(
+                                onDetect: (barcodeCapture) {
+                                  final List<Barcode> barcodes = barcodeCapture.barcodes;
+                                  if (barcodes.isNotEmpty) {
+                                    final String? code = barcodes.first.rawValue;
+                                    if (code != null) {
+                                      List<String> parts = code.split(',');
+                                      if (parts.length == 3) {
+                                        setState(() {
+                                          nim = parts[0].trim();
+                                          nama = parts[1].trim();
+                                          kelompok = parts[2].trim();
+                                          timestamp = getCurrentTimestamp();
+                                          result = '''
 NIM        : $nim
 Nama       : $nama
 Kelompok   : $kelompok
 
 Scanned at : $timestamp
 ''';
-                                      isScanning = false;
-                                      sudahKirim = false;
-                                      isQrValid = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      result = 'Format QR tidak valid.\nPastikan format: NIM,Nama,Kelompok';
-                                      isScanning = false;
-                                      isQrValid = false;
-                                    });
+                                          isScanning = false;
+                                          sudahKirim = false;
+                                          isQrValid = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          result = 'Format QR tidak valid.\nPastikan format: NIM,Nama,Kelompok';
+                                          isScanning = false;
+                                          isQrValid = false;
+                                        });
+                                      }
+                                    }
                                   }
-                                }
-                              }
-                            },
-                          ),
-                          // Tombol stop scan
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: ElevatedButton(
-                                onPressed: stopScanner,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: pastelButton,
-                                  foregroundColor: pastelBlue,
-                                ),
-                                child: const Text("Stop Scanning"),
+                                },
                               ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: nim == null ? MainAxisAlignment.center : MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            const SizedBox(height: 40),
-                            ClipOval(
-                              child: Image.asset(
-                                'assets/logo.jpg',
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Container(
-                                width: double.infinity,
-                                child: Text(
-                                  result,
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xFF6A7BA2),
-                                    height: 1.5,
-                                    fontFamily: 'Courier',
-                                  ),
-                                  textAlign: nim == null ? TextAlign.center : TextAlign.left,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 20.0),
-
-                            // Tombol Scan QR
-                            ElevatedButton(
-                              onPressed: startScanner,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: pastelButton,
-                                foregroundColor: pastelBlue,
-                              ),
-                              child: const Text('Scan QR CODE', style: TextStyle(fontSize: 20)),
-                            ),
-                            const SizedBox(height: 20),
-
-                            // Tombol Kirim Data
-                            isLoading
-                                ? const CircularProgressIndicator()
-                                : ElevatedButton(
-                                    onPressed: (!isQrValid || sudahKirim || nim == null || !isOnline)
-                                        ? null
-                                        : kirimDataKeSheet,
+                              // Tombol stop scan
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: ElevatedButton(
+                                    onPressed: stopScanner,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: pastelButton,
                                       foregroundColor: pastelBlue,
                                     ),
-                                    child: const Text('Hadir', style: TextStyle(fontSize: 18)),
+                                    child: const Text("Stop Scanning"),
                                   ),
-                            const SizedBox(height: 40),
-                          ],
-                        ),
-                      ),
-              ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: nim == null ? MainAxisAlignment.center : MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                const SizedBox(height: 40),
+                                ClipOval(
+                                  child: Image.asset(
+                                    'assets/logo.jpg',
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: Text(
+                                      result,
+                                      style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color.fromARGB(255, 255, 255, 255),
+                                        height: 1.5,
+                                        fontFamily: 'Courier',
+                                      ),
+                                      textAlign: nim == null ? TextAlign.center : TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 20.0),
+                                // Tombol Scan QR
+                                ElevatedButton(
+                                  onPressed: startScanner,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: pastelButton,
+                                    foregroundColor: pastelBlue,
+                                  ),
+                                  child: const Text('Scan QR CODE', style: TextStyle(fontSize: 20)),
+                                ),
+                                const SizedBox(height: 20),
+                                // Tombol Kirim Data
+                                isLoading
+                                    ? const CircularProgressIndicator()
+                                    : ElevatedButton(
+                                        onPressed: (!isQrValid || sudahKirim || nim == null || !isOnline)
+                                            ? null
+                                            : kirimDataKeSheet,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: pastelButton,
+                                          foregroundColor: pastelBlue,
+                                        ),
+                                        child: const Text('Hadir', style: TextStyle(fontSize: 18)),
+                                      ),
+                                const SizedBox(height: 40),
+                              ],
+                            ),
+                          ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      ],
-      )
-      
     );
   }
 }
