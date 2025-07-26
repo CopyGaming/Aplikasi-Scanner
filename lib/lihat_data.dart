@@ -108,6 +108,21 @@ class _LihatDataPageState extends State<LihatDataPage> {
     setState(() {});
   }
 
+  // Tambahkan fungsi untuk menghitung jumlah per kelompok
+  Map<String, int> getJumlahPerKelompok() {
+    if (data.isEmpty || data[0].isEmpty) return {};
+    final headers = data[0];
+    final kelompokIndex = headers.indexWhere((h) => h.toLowerCase().contains('kelompok'));
+    if (kelompokIndex == -1) return {};
+    final Map<String, int> result = {};
+    for (var row in data.skip(1)) {
+      final kelompok = row[kelompokIndex].toString();
+      if (kelompok.trim().isEmpty) continue;
+      result[kelompok] = (result[kelompok] ?? 0) + 1;
+    }
+    return result;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -125,6 +140,16 @@ class _LihatDataPageState extends State<LihatDataPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Urutkan kelompokList (kecuali 'Semua' di depan)
+    final sortedKelompokList = [
+      'Semua',
+      ...kelompokList.where((k) => k != 'Semua').toList()..sort((a, b) => a.compareTo(b))
+    ];
+
+    // Hitung jumlah hadir (tanpa header)
+    final jumlahHadir = filteredData.length > 1 ? filteredData.length - 1 : 0;
+    final jumlahPerKelompok = getJumlahPerKelompok();
+
     return Scaffold(
       backgroundColor: pastelPink,
       appBar: AppBar(
@@ -192,7 +217,7 @@ class _LihatDataPageState extends State<LihatDataPage> {
                             labelText: "Kelompok",
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                           ),
-                          items: kelompokList
+                          items: sortedKelompokList
                               .map((k) => DropdownMenuItem(
                                     value: k,
                                     child: Text(k),
@@ -220,6 +245,77 @@ class _LihatDataPageState extends State<LihatDataPage> {
                             searchQuery = val;
                             applyFilter();
                           },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Tampilkan jumlah hadir & jumlah per kelompok
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Card(
+                        color: Colors.white.withOpacity(0.85),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.people, color: Colors.green, size: 22),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Jumlah Hadir: ",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: pastelBlue,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                "$jumlahHadir",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: pastelButton,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(width: 24),
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: jumlahPerKelompok.entries.map((e) => Padding(
+                                      padding: const EdgeInsets.only(right: 16),
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.group, color: pastelBlue, size: 18),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "${e.key}: ",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              color: pastelBlue,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${e.value}",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: pastelButton,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )).toList(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
